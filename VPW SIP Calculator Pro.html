@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPW SIP Calculator - Outgrow the Ordinary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --hunter-green: #1d4636;
+            --light-green: #f0f4f3;
+            --dark-bg: #0f1419;
+            --white: #ffffff;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-700: #495057;
+            --text-dark: #1a1a1a;
+            --border-color: rgba(29, 70, 54, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--white);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Libre Baskerville', serif;
+        }
+
+        p, span {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        /* Header with Logo */
+        header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* Navigation Menu - Apple Liquid Glass */
+        .nav-menu {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-top: 16px;
+            box-shadow: 
+                0 16px 48px 0 rgba(0, 0, 0, 0.08),
+                inset 0 1px 2px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: transparent;
+            color: var(--text-dark);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .nav-btn:hover {
+            background: rgba(29, 70, 54, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: var(--hunter-green);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(29, 70, 54, 0.3);
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-wrapper a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-wrapper a:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo-img {
+            height: 72px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            display: none;
+        }
+
+        .logo-title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-dark);
+        }
+
+        .tagline {
+            font-size: 12px;
+            color: var(--hunter-green);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Liquid Glass Effect Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 
+                0 8px 32px 0 rgba(31, 38, 135, 0.05),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
+            margin-bottom: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            box-shadow: 
+                0 12px 48px 0 rgba(31, 38, 135, 0.08),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        /* Form Section */
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 32px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(240, 244, 243, 0.5);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--hunter-green);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(29, 70, 54, 0.08);
+        }
+
+        .input-suffix {
+            position: absolute;
+            right: 16px;
+            color: var(--hunter-green);
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .input-wrapper .form-input {
+            padding-right: 40px;
+        }
+
+        /* Range Slider */
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border-color);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            margin-top: 8px;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--hunter-green);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(29, 70, 54, 0.3);
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(29, 70, 54, 0.4);
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--hunter-green);
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(29, 70, 54, 0.3);
+        }
+
+        .range-slider::-moz-range-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(29, 70, 54, 0.4);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-calculate {
+            background: var(--hunter-green);
+            color: var(--white);
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .btn-calculate:hover {
+            background: #153229;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(29, 70, 54, 0.3);
+        }
+
+        .btn-reset {
+            background: var(--gray-200);
+            color: var(--text-dark);
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .btn-reset:hover {
+            background: var(--border-color);
+            transform: translateY(-2px);
+        }
+
+        /* Results Section */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin: 32px 0;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(240, 244, 243, 0.6) 0%, rgba(255, 255, 255, 0.8) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: var(--gray-700);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--hunter-green);
+        }
+
+        .result-subtext {
+            font-size: 11px;
+            color: var(--gray-700);
+            margin-top: 4px;
+        }
+
+        /* Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .chart-wrapper {
+            background: linear-gradient(135deg, rgba(240, 244, 243, 0.4) 0%, rgba(255, 255, 255, 0.6) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .chart-wrapper:hover {
+            box-shadow: 0 8px 24px rgba(29, 70, 54, 0.08);
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chart-canvas {
+            position: relative;
+            height: 250px;
+        }
+
+        /* Growth Projection Graph */
+        .projection-chart {
+            height: 300px;
+        }
+
+        /* Checkbox Group */
+        .checkbox-group {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--hunter-green);
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            cursor: pointer;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        /* Additional Input Row */
+        .additional-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+            padding: 16px;
+            background: rgba(240, 244, 243, 0.3);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .additional-inputs.hidden {
+            display: none;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--white);
+            border-top: 1px solid var(--border-color);
+            padding: 32px 20px;
+            margin-top: 40px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .formula-section {
+            background: linear-gradient(135deg, rgba(240, 244, 243, 0.4) 0%, rgba(255, 255, 255, 0.6) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .formula-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            font-family: 'Libre Baskerville', serif;
+        }
+
+        .formula-content {
+            font-size: 13px;
+            color: var(--gray-700);
+            line-height: 1.8;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .formula-code {
+            background: rgba(29, 70, 54, 0.05);
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-family: 'Courier New', monospace;
+            color: var(--hunter-green);
+            overflow-x: auto;
+        }
+
+        .footer-credit {
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray-700);
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 12px;
+            }
+
+            .glass-card {
+                padding: 20px;
+                border-radius: 16px;
+            }
+
+            .input-section {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header-container {
+                flex-direction: row;
+                gap: 12px;
+                justify-content: center;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                margin-top: 12px;
+            }
+
+            .nav-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .logo-img {
+                height: 56px;
+            }
+
+            .logo-title {
+                font-size: 20px;
+            }
+
+            .result-value {
+                font-size: 20px;
+            }
+        }
+
+        /* Hidden by default */
+        .hidden {
+            display: none;
+        }
+
+        /* Loading Animation */
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Utility */
+        .mt-2 {
+            margin-top: 8px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo-wrapper">
+                <a href="https://victoriaofficeindi.wixsite.com/vpw-india" target="_blank" rel="noopener noreferrer">
+                    <img src="https://agi-prod-file-upload-public-main-use1.s3.amazonaws.com/8c407a10-06b9-4ba6-bca4-3b00fc620691" alt="VPW Logo" class="logo-img">
+                    <div class="logo-text">
+                        <div class="logo-title">VPW</div>
+                        <div class="tagline">Outgrow the Ordinary</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- Navigation Menu -->
+        <nav class="nav-menu">
+            <button class="nav-btn active" onclick="navigateTo('sip')">SIP Calculator</button>
+            <button class="nav-btn" onclick="navigateTo('lumpsum')">Lumpsum Calculator</button>
+            <button class="nav-btn" onclick="navigateTo('loan')">Loan Calculator</button>
+            <button class="nav-btn" onclick="navigateTo('swp')">SWP Calculator</button>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Input Form Card -->
+        <div class="glass-card">
+            <div style="margin-bottom: 24px; text-align: center;">
+                <h2 style="font-size: 32px; color: var(--text-dark); margin-bottom: 8px; font-family: 'Libre Baskerville', serif;">SIP Calculator</h2>
+                <p style="color: var(--gray-700); font-size: 14px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">Calculate your investment growth with systematic monthly contributions</p>
+            </div>
+
+            <!-- Input Fields -->
+            <div class="input-section">
+                <div class="form-group">
+                    <label class="form-label">Monthly Investment</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="monthlyInvestment" 
+                            class="form-input" 
+                            value="5000" 
+                            min="100" 
+                            max="1000000"
+                            step="100"
+                        >
+                        <span class="input-suffix">₹</span>
+                    </div>
+                    <input type="range" class="range-slider" id="monthlyRange" min="100" max="100000" value="5000" step="100">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Investment Period</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="investmentPeriod" 
+                            class="form-input" 
+                            value="10" 
+                            min="1" 
+                            max="50"
+                            step="1"
+                        >
+                        <span class="input-suffix">Years</span>
+                    </div>
+                    <input type="range" class="range-slider" id="periodRange" min="1" max="50" value="10" step="1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Expected Annual Return</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="annualReturn" 
+                            class="form-input" 
+                            value="12" 
+                            min="1" 
+                            max="30"
+                            step="0.5"
+                        >
+                        <span class="input-suffix">%</span>
+                    </div>
+                    <input type="range" class="range-slider" id="returnRange" min="1" max="30" value="12" step="0.5">
+                </div>
+            </div>
+
+            <!-- Advanced Options -->
+            <div class="checkbox-group">
+                <div class="checkbox-wrapper">
+                    <input 
+                        type="checkbox" 
+                        id="inflationAdjustment" 
+                        class="checkbox-input"
+                        onchange="toggleInflationInput()"
+                    >
+                    <label for="inflationAdjustment" class="checkbox-label">Inflation Adjustment</label>
+                </div>
+                <div class="checkbox-wrapper">
+                    <input 
+                        type="checkbox" 
+                        id="stepupIncrease" 
+                        class="checkbox-input"
+                        onchange="toggleStepupInput()"
+                    >
+                    <label for="stepupIncrease" class="checkbox-label">Step-up Increase</label>
+                </div>
+            </div>
+
+            <!-- Additional Inputs (Hidden by default) -->
+            <div class="additional-inputs hidden" id="additionalInputs">
+                <div class="form-group" id="inflationGroup" style="display: none;">
+                    <label class="form-label">Annual Inflation Rate</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="inflationRate" 
+                            class="form-input" 
+                            value="5" 
+                            min="0" 
+                            max="10"
+                            step="0.5"
+                        >
+                        <span class="input-suffix">%</span>
+                    </div>
+                </div>
+                <div class="form-group" id="stepupGroup" style="display: none;">
+                    <label class="form-label">Annual Step-up Increase</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="stepupPercentage" 
+                            class="form-input" 
+                            value="5" 
+                            min="0" 
+                            max="20"
+                            step="1"
+                        >
+                        <span class="input-suffix">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button class="btn btn-calculate" onclick="calculateSIP()">Calculate</button>
+                <button class="btn btn-reset" onclick="resetCalculator()">Reset</button>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="glass-card" id="resultsCard" style="display: none;">
+            <h3 style="font-size: 20px; margin-bottom: 24px; color: var(--text-dark);">Your Investment Summary</h3>
+            
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-label">Total Investment</div>
+                    <div class="result-value" id="totalInvested">₹0</div>
+                    <div class="result-subtext">Principal Amount</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Estimated Gains</div>
+                    <div class="result-value" id="totalGains" style="color: #27ae60;">₹0</div>
+                    <div class="result-subtext">Investment Returns</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Maturity Amount</div>
+                    <div class="result-value" id="maturityAmount">₹0</div>
+                    <div class="result-subtext">Total Value</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Return on Investment</div>
+                    <div class="result-value" id="roiPercentage">0%</div>
+                    <div class="result-subtext">ROI</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <div class="chart-title">Investment Breakdown</div>
+                    <div class="chart-canvas">
+                        <canvas id="breakdownChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <div class="chart-title">Growth Projection</div>
+                    <div class="chart-canvas projection-chart">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let breakdownChart = null;
+        let growthChart = null;
+
+        // Sync input fields with range sliders
+        document.getElementById('monthlyInvestment').addEventListener('input', (e) => {
+            document.getElementById('monthlyRange').value = e.target.value;
+        });
+        document.getElementById('monthlyRange').addEventListener('input', (e) => {
+            document.getElementById('monthlyInvestment').value = e.target.value;
+        });
+
+        document.getElementById('investmentPeriod').addEventListener('input', (e) => {
+            document.getElementById('periodRange').value = e.target.value;
+        });
+        document.getElementById('periodRange').addEventListener('input', (e) => {
+            document.getElementById('investmentPeriod').value = e.target.value;
+        });
+
+        document.getElementById('annualReturn').addEventListener('input', (e) => {
+            document.getElementById('returnRange').value = e.target.value;
+        });
+        document.getElementById('returnRange').addEventListener('input', (e) => {
+            document.getElementById('annualReturn').value = e.target.value;
+        });
+
+        function calculateSIP() {
+            const monthlyInvestment = parseFloat(document.getElementById('monthlyInvestment').value);
+            const investmentPeriod = parseInt(document.getElementById('investmentPeriod').value);
+            const annualReturn = parseFloat(document.getElementById('annualReturn').value);
+
+            if (!monthlyInvestment || !investmentPeriod || !annualReturn) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            // Calculate SIP
+            const monthlyReturn = annualReturn / 12 / 100;
+            const numberOfMonths = investmentPeriod * 12;
+            
+            // FV = P * [((1 + r)^n - 1) / r] * (1 + r)
+            const maturityAmount = monthlyInvestment * 
+                (((Math.pow(1 + monthlyReturn, numberOfMonths) - 1) / monthlyReturn) * (1 + monthlyReturn));
+            
+            const totalInvested = monthlyInvestment * numberOfMonths;
+            const totalGains = maturityAmount - totalInvested;
+            const roiPercentage = ((totalGains / totalInvested) * 100).toFixed(2);
+
+            // Display Results
+            document.getElementById('totalInvested').textContent = '₹' + formatNumber(totalInvested.toFixed(0));
+            document.getElementById('totalGains').textContent = '₹' + formatNumber(totalGains.toFixed(0));
+            document.getElementById('maturityAmount').textContent = '₹' + formatNumber(maturityAmount.toFixed(0));
+            document.getElementById('roiPercentage').textContent = roiPercentage + '%';
+
+            // Show results card
+            document.getElementById('resultsCard').style.display = 'block';
+
+            // Create Charts
+            createBreakdownChart(totalInvested, totalGains);
+            createGrowthChart(monthlyInvestment, investmentPeriod, annualReturn);
+
+            // Smooth scroll to results
+            setTimeout(() => {
+                document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        function createBreakdownChart(principal, gains) {
+            const ctx = document.getElementById('breakdownChart').getContext('2d');
+            
+            if (breakdownChart) {
+                breakdownChart.destroy();
+            }
+
+            breakdownChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Principal', 'Gains'],
+                    datasets: [{
+                        data: [principal, gains],
+                        backgroundColor: [
+                            'rgba(29, 70, 54, 0.15)',
+                            'rgba(29, 70, 54, 0.6)',
+                        ],
+                        borderColor: [
+                            'rgba(29, 70, 54, 0.3)',
+                            'rgba(29, 70, 54, 0.9)',
+                        ],
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 12, weight: 600 },
+                                color: '#495057',
+                                padding: 16,
+                                usePointStyle: true,
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createGrowthChart(monthlyInvestment, investmentPeriod, annualReturn) {
+            const ctx = document.getElementById('growthChart').getContext('2d');
+            const monthlyReturn = annualReturn / 12 / 100;
+            const months = investmentPeriod * 12;
+            
+            let labels = [];
+            let investedData = [];
+            let maturityData = [];
+
+            for (let i = 0; i <= months; i += Math.max(1, Math.floor(months / 12))) {
+                labels.push((i / 12).toFixed(1) + 'y');
+                investedData.push(monthlyInvestment * i);
+                
+                const maturity = monthlyInvestment * 
+                    (((Math.pow(1 + monthlyReturn, i) - 1) / monthlyReturn) * (1 + monthlyReturn));
+                maturityData.push(maturity);
+            }
+
+            if (growthChart) {
+                growthChart.destroy();
+            }
+
+            growthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Principal',
+                            data: investedData,
+                            borderColor: 'rgba(29, 70, 54, 0.4)',
+                            backgroundColor: 'rgba(29, 70, 54, 0.05)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointBackgroundColor: 'rgba(29, 70, 54, 0.4)',
+                        },
+                        {
+                            label: 'Maturity Value',
+                            data: maturityData,
+                            borderColor: 'rgba(29, 70, 54, 0.8)',
+                            backgroundColor: 'rgba(29, 70, 54, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgba(29, 70, 54, 0.8)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 12, weight: 600 },
+                                color: '#495057',
+                                padding: 16,
+                                usePointStyle: true,
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                font: { size: 11 },
+                                color: '#495057',
+                                callback: (value) => '₹' + (value / 100000).toFixed(0) + 'L'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false,
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 11 },
+                                color: '#495057',
+                            },
+                            grid: {
+                                display: false,
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function resetCalculator() {
+            document.getElementById('monthlyInvestment').value = 5000;
+            document.getElementById('monthlyRange').value = 5000;
+            document.getElementById('investmentPeriod').value = 10;
+            document.getElementById('periodRange').value = 10;
+            document.getElementById('annualReturn').value = 12;
+            document.getElementById('returnRange').value = 12;
+            document.getElementById('resultsCard').style.display = 'none';
+            
+            if (breakdownChart) breakdownChart.destroy();
+            if (growthChart) growthChart.destroy();
+        }
+
+        function formatNumber(num) {
+            return Math.floor(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Navigation function
+        function navigateTo(calculator) {
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            console.log('Navigated to: ' + calculator);
+        }
+
+        function toggleInflationInput() {
+            const isChecked = document.getElementById('inflationAdjustment').checked;
+            const additionalInputs = document.getElementById('additionalInputs');
+            const inflationGroup = document.getElementById('inflationGroup');
+            const stepupChecked = document.getElementById('stepupIncrease').checked;
+
+            inflationGroup.style.display = isChecked ? 'flex' : 'none';
+            additionalInputs.classList.toggle('hidden', !isChecked && !stepupChecked);
+        }
+
+        function toggleStepupInput() {
+            const isChecked = document.getElementById('stepupIncrease').checked;
+            const additionalInputs = document.getElementById('additionalInputs');
+            const stepupGroup = document.getElementById('stepupGroup');
+            const inflationChecked = document.getElementById('inflationAdjustment').checked;
+
+            stepupGroup.style.display = isChecked ? 'flex' : 'none';
+            additionalInputs.classList.toggle('hidden', !inflationChecked && !isChecked);
+        }
+
+        // Update calculateSIP function
+        function calculateSIP() {
+            const monthlyInvestment = parseFloat(document.getElementById('monthlyInvestment').value);
+            const investmentPeriod = parseInt(document.getElementById('investmentPeriod').value);
+            const annualReturn = parseFloat(document.getElementById('annualReturn').value);
+            const hasInflation = document.getElementById('inflationAdjustment').checked;
+            const hasStepup = document.getElementById('stepupIncrease').checked;
+            const inflationRate = hasInflation ? parseFloat(document.getElementById('inflationRate').value) : 0;
+            const stepupPercentage = hasStepup ? parseFloat(document.getElementById('stepupPercentage').value) : 0;
+
+            if (!monthlyInvestment || !investmentPeriod || !annualReturn) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            const monthlyReturn = annualReturn / 12 / 100;
+            const numberOfMonths = investmentPeriod * 12;
+            
+            let maturityAmount = 0;
+            let totalInvested = 0;
+
+            // Calculate with step-up if enabled
+            if (hasStepup) {
+                const monthlyStepup = stepupPercentage / 100 / 12;
+                for (let month = 1; month <= numberOfMonths; month++) {
+                    const yearFraction = (month - 1) / 12;
+                    const monthlyAmount = monthlyInvestment * Math.pow(1 + stepupPercentage / 100, yearFraction);
+                    const monthsRemaining = numberOfMonths - month + 1;
+                    maturityAmount += monthlyAmount * Math.pow(1 + monthlyReturn, monthsRemaining);
+                    totalInvested += monthlyAmount;
+                }
+            } else {
+                // Standard SIP calculation
+                maturityAmount = monthlyInvestment * 
+                    (((Math.pow(1 + monthlyReturn, numberOfMonths) - 1) / monthlyReturn) * (1 + monthlyReturn));
+                totalInvested = monthlyInvestment * numberOfMonths;
+            }
+
+            // Apply inflation adjustment if enabled
+            let realMaturityAmount = maturityAmount;
+            if (hasInflation) {
+                const monthlyInflation = inflationRate / 12 / 100;
+                realMaturityAmount = maturityAmount / Math.pow(1 + inflationRate / 100, investmentPeriod);
+            }
+
+            const totalGains = maturityAmount - totalInvested;
+            const roiPercentage = ((totalGains / totalInvested) * 100).toFixed(2);
+
+            // Display Results
+            document.getElementById('totalInvested').textContent = '₹' + formatNumber(totalInvested.toFixed(0));
+            document.getElementById('totalGains').textContent = '₹' + formatNumber(totalGains.toFixed(0));
+            
+            if (hasInflation) {
+                document.getElementById('maturityAmount').innerHTML = '₹' + formatNumber(maturityAmount.toFixed(0)) + 
+                    '<div style="font-size: 11px; color: #999; margin-top: 4px;">Real Value: ₹' + formatNumber(realMaturityAmount.toFixed(0)) + '</div>';
+            } else {
+                document.getElementById('maturityAmount').textContent = '₹' + formatNumber(maturityAmount.toFixed(0));
+            }
+            
+            document.getElementById('roiPercentage').textContent = roiPercentage + '%';
+
+            document.getElementById('resultsCard').style.display = 'block';
+
+            createBreakdownChart(totalInvested, totalGains);
+            createGrowthChart(monthlyInvestment, investmentPeriod, annualReturn, hasStepup, stepupPercentage);
+
+            setTimeout(() => {
+                document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        function createGrowthChart(monthlyInvestment, investmentPeriod, annualReturn, hasStepup = false, stepupPercentage = 0) {
+            const ctx = document.getElementById('growthChart').getContext('2d');
+            const monthlyReturn = annualReturn / 12 / 100;
+            const months = investmentPeriod * 12;
+            
+            let labels = [];
+            let investedData = [];
+            let maturityData = [];
+
+            for (let i = 0; i <= months; i += Math.max(1, Math.floor(months / 12))) {
+                labels.push((i / 12).toFixed(1) + 'y');
+                
+                let totalInvested = 0;
+                let totalMaturity = 0;
+
+                if (hasStepup) {
+                    for (let month = 1; month <= i; month++) {
+                        const yearFraction = (month - 1) / 12;
+                        const monthlyAmount = monthlyInvestment * Math.pow(1 + stepupPercentage / 100, yearFraction);
+                        const monthsRemaining = i - month + 1;
+                        totalInvested += monthlyAmount;
+                        totalMaturity += monthlyAmount * Math.pow(1 + monthlyReturn, monthsRemaining);
+                    }
+                } else {
+                    totalInvested = monthlyInvestment * i;
+                    const maturity = monthlyInvestment * 
+                        (((Math.pow(1 + monthlyReturn, i) - 1) / monthlyReturn) * (1 + monthlyReturn));
+                    totalMaturity = maturity;
+                }
+
+                investedData.push(totalInvested);
+                maturityData.push(totalMaturity);
+            }
+
+            if (growthChart) {
+                growthChart.destroy();
+            }
+
+            growthChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Principal',
+                            data: investedData,
+                            borderColor: 'rgba(29, 70, 54, 0.4)',
+                            backgroundColor: 'rgba(29, 70, 54, 0.05)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointBackgroundColor: 'rgba(29, 70, 54, 0.4)',
+                        },
+                        {
+                            label: 'Maturity Value',
+                            data: maturityData,
+                            borderColor: 'rgba(29, 70, 54, 0.8)',
+                            backgroundColor: 'rgba(29, 70, 54, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgba(29, 70, 54, 0.8)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 12, weight: 600 },
+                                color: '#495057',
+                                padding: 16,
+                                usePointStyle: true,
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                font: { size: 11 },
+                                color: '#495057',
+                                callback: (value) => '₹' + (value / 100000).toFixed(0) + 'L'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false,
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 11 },
+                                color: '#495057',
+                            },
+                            grid: {
+                                display: false,
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function resetCalculator() {
+            document.getElementById('monthlyInvestment').value = 5000;
+            document.getElementById('monthlyRange').value = 5000;
+            document.getElementById('investmentPeriod').value = 10;
+            document.getElementById('periodRange').value = 10;
+            document.getElementById('annualReturn').value = 12;
+            document.getElementById('returnRange').value = 12;
+            document.getElementById('inflationAdjustment').checked = false;
+            document.getElementById('stepupIncrease').checked = false;
+            document.getElementById('inflationRate').value = 5;
+            document.getElementById('stepupPercentage').value = 5;
+            document.getElementById('resultsCard').style.display = 'none';
+            document.getElementById('additionalInputs').classList.add('hidden');
+            document.getElementById('inflationGroup').style.display = 'none';
+            document.getElementById('stepupGroup').style.display = 'none';
+            
+            if (breakdownChart) breakdownChart.destroy();
+            if (growthChart) growthChart.destroy();
+        }
+
+        function formatNumber(num) {
+            return Math.floor(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Auto-calculate on load
+        window.addEventListener('load', () => {
+            // Optional: uncomment to auto-calculate on page load
+            // calculateSIP();
+        });
+    </script>
+
+    <!-- Footer with Formula -->
+    <footer>
+        <div class="footer-container">
+            <div class="formula-section">
+                <div class="formula-title">SIP Calculation Formula</div>
+                <div class="formula-content">
+                    <strong>Basic SIP Formula:</strong>
+                    <div class="formula-code">FV = P × [((1 + r)^n - 1) / r] × (1 + r)</div>
+                    <p style="margin-top: 12px;">
+                        Where:<br>
+                        <strong>FV</strong> = Future Value (Maturity Amount)<br>
+                        <strong>P</strong> = Monthly Investment<br>
+                        <strong>r</strong> = Monthly Return Rate (Annual Rate ÷ 12 ÷ 100)<br>
+                        <strong>n</strong> = Number of Months (Years × 12)
+                    </p>
+                    <p style="margin-top: 12px; font-size: 12px; color: #666;">
+                        <strong>With Step-up:</strong> Monthly SIP increases by the specified percentage every year, compounding growth.<br>
+                        <strong>With Inflation Adjustment:</strong> Real value = Maturity Amount ÷ (1 + Inflation Rate)^Years
+                    </p>
+                </div>
+            </div>
+            <div class="footer-credit">
+                © 2025 Victoria Paradise Wealth (VPW) | SIP Calculator | 
+                <a href="https://victoriaofficeindi.wixsite.com/vpw-india" target="_blank" rel="noopener noreferrer" style="color: var(--hunter-green);">Learn More</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
