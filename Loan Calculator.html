@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPW Loan Calculator - Outgrow the Ordinary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --hunter-green: #1d4636;
+            --light-green: #f0f4f3;
+            --dark-bg: #0f1419;
+            --white: #ffffff;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-700: #495057;
+            --text-dark: #1a1a1a;
+            --border-color: rgba(29, 70, 54, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--white);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Libre Baskerville', serif;
+        }
+
+        p, span {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        /* Header with Logo */
+        header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border-color);
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* Navigation Menu - Apple Liquid Glass */
+        .nav-menu {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-top: 16px;
+            box-shadow: 
+                0 16px 48px 0 rgba(0, 0, 0, 0.08),
+                inset 0 1px 2px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: transparent;
+            color: var(--text-dark);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .nav-btn:hover {
+            background: rgba(29, 70, 54, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.active {
+            background: var(--hunter-green);
+            color: var(--white);
+            box-shadow: 0 4px 12px rgba(29, 70, 54, 0.3);
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-wrapper a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-wrapper a:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo-img {
+            height: 72px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            display: none;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Liquid Glass Effect Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 
+                0 8px 32px 0 rgba(31, 38, 135, 0.05),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
+            margin-bottom: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            box-shadow: 
+                0 12px 48px 0 rgba(31, 38, 135, 0.08),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        /* Form Section */
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 32px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(240, 244, 243, 0.5);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--hunter-green);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(29, 70, 54, 0.08);
+        }
+
+        .input-suffix {
+            position: absolute;
+            right: 16px;
+            color: var(--hunter-green);
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .input-wrapper .form-input {
+            padding-right: 40px;
+        }
+
+        /* Range Slider */
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border-color);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            margin-top: 8px;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--hunter-green);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(29, 70, 54, 0.3);
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(29, 70, 54, 0.4);
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--hunter-green);
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(29, 70, 54, 0.3);
+        }
+
+        .range-slider::-moz-range-thumb:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 12px rgba(29, 70, 54, 0.4);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-calculate {
+            background: var(--hunter-green);
+            color: var(--white);
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .btn-calculate:hover {
+            background: #153229;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(29, 70, 54, 0.3);
+        }
+
+        .btn-reset {
+            background: var(--gray-200);
+            color: var(--text-dark);
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .btn-reset:hover {
+            background: var(--border-color);
+            transform: translateY(-2px);
+        }
+
+        /* Results Section */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin: 32px 0;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, rgba(240, 244, 243, 0.6) 0%, rgba(255, 255, 255, 0.8) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: var(--gray-700);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--hunter-green);
+        }
+
+        .result-subtext {
+            font-size: 11px;
+            color: var(--gray-700);
+            margin-top: 4px;
+        }
+
+        /* Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .chart-wrapper {
+            background: linear-gradient(135deg, rgba(240, 244, 243, 0.4) 0%, rgba(255, 255, 255, 0.6) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .chart-wrapper:hover {
+            box-shadow: 0 8px 24px rgba(29, 70, 54, 0.08);
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chart-canvas {
+            position: relative;
+            height: 250px;
+        }
+
+        /* Amortization Table */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: rgba(29, 70, 54, 0.08);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--gray-700);
+        }
+
+        tr:hover {
+            background: rgba(29, 70, 54, 0.04);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--white);
+            border-top: 1px solid var(--border-color);
+            padding: 32px 20px;
+            margin-top: 40px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .formula-section {
+            background: linear-gradient(135deg, rgba(240, 244, 243, 0.4) 0%, rgba(255, 255, 255, 0.6) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .formula-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            font-family: 'Libre Baskerville', serif;
+        }
+
+        .formula-content {
+            font-size: 13px;
+            color: var(--gray-700);
+            line-height: 1.8;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .formula-code {
+            background: rgba(29, 70, 54, 0.05);
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-family: 'Courier New', monospace;
+            color: var(--hunter-green);
+            overflow-x: auto;
+        }
+
+        .footer-credit {
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray-700);
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 12px;
+            }
+
+            .glass-card {
+                padding: 20px;
+                border-radius: 16px;
+            }
+
+            .input-section {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header-container {
+                flex-direction: row;
+                gap: 12px;
+                justify-content: center;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                margin-top: 12px;
+            }
+
+            .nav-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .logo-img {
+                height: 56px;
+            }
+
+            .result-value {
+                font-size: 20px;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        /* Hidden by default */
+        .hidden {
+            display: none;
+        }
+
+        /* Utility */
+        .mt-2 {
+            margin-top: 8px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo-wrapper">
+                <a href="https://victoriaofficeindi.wixsite.com/vpw-india" target="_blank" rel="noopener noreferrer">
+                    <img src="https://agi-prod-file-upload-public-main-use1.s3.amazonaws.com/8c407a10-06b9-4ba6-bca4-3b00fc620691" alt="VPW Logo" class="logo-img">
+                </a>
+            </div>
+        </div>
+        <!-- Navigation Menu -->
+        <nav class="nav-menu">
+            <button class="nav-btn" onclick="navigateTo('sip')">SIP Calculator</button>
+            <button class="nav-btn" onclick="navigateTo('lumpsum')">Lumpsum Calculator</button>
+            <button class="nav-btn active" onclick="navigateTo('loan')">Loan Calculator</button>
+            <button class="nav-btn" onclick="navigateTo('swp')">SWP Calculator</button>
+        </nav>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Input Form Card -->
+        <div class="glass-card">
+            <div style="margin-bottom: 24px; text-align: center;">
+                <h2 style="font-size: 32px; color: var(--text-dark); margin-bottom: 8px; font-family: 'Libre Baskerville', serif;">Loan Calculator</h2>
+                <p style="color: var(--gray-700); font-size: 14px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">Calculate EMI and analyze your loan repayment schedule</p>
+            </div>
+
+            <!-- Input Fields -->
+            <div class="input-section">
+                <div class="form-group">
+                    <label class="form-label">Loan Amount</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="loanAmount" 
+                            class="form-input" 
+                            value="500000" 
+                            min="10000" 
+                            max="100000000"
+                            step="10000"
+                        >
+                        <span class="input-suffix">₹</span>
+                    </div>
+                    <input type="range" class="range-slider" id="loanRange" min="10000" max="10000000" value="500000" step="10000">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Annual Interest Rate</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="interestRate" 
+                            class="form-input" 
+                            value="8.5" 
+                            min="1" 
+                            max="25"
+                            step="0.1"
+                        >
+                        <span class="input-suffix">%</span>
+                    </div>
+                    <input type="range" class="range-slider" id="interestRange" min="1" max="25" value="8.5" step="0.1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Loan Tenure</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="loanTenure" 
+                            class="form-input" 
+                            value="20" 
+                            min="1" 
+                            max="40"
+                            step="1"
+                        >
+                        <span class="input-suffix">Years</span>
+                    </div>
+                    <input type="range" class="range-slider" id="tenureRange" min="1" max="40" value="20" step="1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Down Payment (Optional)</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="number" 
+                            id="downPayment" 
+                            class="form-input" 
+                            value="0" 
+                            min="0" 
+                            max="50000000"
+                            step="10000"
+                        >
+                        <span class="input-suffix">₹</span>
+                    </div>
+                    <input type="range" class="range-slider" id="downPaymentRange" min="0" max="5000000" value="0" step="10000">
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button class="btn btn-calculate" onclick="calculateLoan()">Calculate</button>
+                <button class="btn btn-reset" onclick="resetCalculator()">Reset</button>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="glass-card" id="resultsCard" style="display: none;">
+            <h3 style="font-size: 20px; margin-bottom: 24px; color: var(--text-dark);">Loan Summary</h3>
+            
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-label">Monthly EMI</div>
+                    <div class="result-value" id="emiValue">₹0</div>
+                    <div class="result-subtext">Fixed EMI</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Principal Amount</div>
+                    <div class="result-value" id="principalValue">₹0</div>
+                    <div class="result-subtext">Loan Borrowed</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Total Interest</div>
+                    <div class="result-value" id="totalInterestValue" style="color: #e74c3c;">₹0</div>
+                    <div class="result-subtext">Over Tenure</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Total Payable</div>
+                    <div class="result-value" id="totalPayableValue">₹0</div>
+                    <div class="result-subtext">Principal + Interest</div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <div class="chart-title">Principal vs Interest Breakdown</div>
+                    <div class="chart-canvas">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <div class="chart-title">Outstanding Balance Over Time</div>
+                    <div class="chart-canvas">
+                        <canvas id="balanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Amortization Table -->
+            <div style="margin-top: 32px;">
+                <h4 style="font-size: 16px; margin-bottom: 16px; color: var(--text-dark); font-family: 'Libre Baskerville', serif;">Amortization Schedule (First 12 Months)</h4>
+                <div class="table-wrapper">
+                    <table id="amortizationTable">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>EMI</th>
+                                <th>Principal</th>
+                                <th>Interest</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pieChart = null;
+        let balanceChart = null;
+
+        // Sync input fields with range sliders
+        document.getElementById('loanAmount').addEventListener('input', (e) => {
+            document.getElementById('loanRange').value = e.target.value;
+        });
+        document.getElementById('loanRange').addEventListener('input', (e) => {
+            document.getElementById('loanAmount').value = e.target.value;
+        });
+
+        document.getElementById('interestRate').addEventListener('input', (e) => {
+            document.getElementById('interestRange').value = e.target.value;
+        });
+        document.getElementById('interestRange').addEventListener('input', (e) => {
+            document.getElementById('interestRate').value = e.target.value;
+        });
+
+        document.getElementById('loanTenure').addEventListener('input', (e) => {
+            document.getElementById('tenureRange').value = e.target.value;
+        });
+        document.getElementById('tenureRange').addEventListener('input', (e) => {
+            document.getElementById('loanTenure').value = e.target.value;
+        });
+
+        document.getElementById('downPayment').addEventListener('input', (e) => {
+            document.getElementById('downPaymentRange').value = e.target.value;
+        });
+        document.getElementById('downPaymentRange').addEventListener('input', (e) => {
+            document.getElementById('downPayment').value = e.target.value;
+        });
+
+        function calculateLoan() {
+            const totalPrice = parseFloat(document.getElementById('loanAmount').value);
+            const downPayment = parseFloat(document.getElementById('downPayment').value);
+            const principal = totalPrice - downPayment;
+            const annualRate = parseFloat(document.getElementById('interestRate').value);
+            const tenureYears = parseInt(document.getElementById('loanTenure').value);
+
+            if (!totalPrice || !annualRate || !tenureYears) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            const monthlyRate = annualRate / 100 / 12;
+            const numberOfPayments = tenureYears * 12;
+
+            // EMI Calculation: EMI = P * [r(1+r)^n] / [(1+r)^n - 1]
+            const numerator = monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments);
+            const denominator = Math.pow(1 + monthlyRate, numberOfPayments) - 1;
+            const emi = principal * (numerator / denominator);
+
+            const totalPayable = emi * numberOfPayments;
+            const totalInterest = totalPayable - principal;
+
+            // Display Results
+            document.getElementById('emiValue').textContent = '₹' + formatNumber(emi.toFixed(0));
+            document.getElementById('principalValue').textContent = '₹' + formatNumber(principal.toFixed(0));
+            document.getElementById('totalInterestValue').textContent = '₹' + formatNumber(totalInterest.toFixed(0));
+            document.getElementById('totalPayableValue').textContent = '₹' + formatNumber(totalPayable.toFixed(0));
+
+            // Generate Pie Chart
+            createPieChart(principal, totalInterest);
+
+            // Generate Balance Chart
+            createBalanceChart(principal, monthlyRate, numberOfPayments, emi);
+
+            // Generate Amortization Table (first 12 months)
+            generateAmortizationTable(principal, monthlyRate, emi, Math.min(12, numberOfPayments));
+
+            document.getElementById('resultsCard').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        function createPieChart(principal, interest) {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            
+            if (pieChart) {
+                pieChart.destroy();
+            }
+
+            pieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Principal', 'Interest'],
+                    datasets: [{
+                        data: [principal, interest],
+                        backgroundColor: [
+                            'rgba(29, 70, 54, 0.8)',
+                            'rgba(231, 76, 60, 0.6)',
+                        ],
+                        borderColor: [
+                            'rgba(29, 70, 54, 0.9)',
+                            'rgba(231, 76, 60, 0.9)',
+                        ],
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 12, weight: 600 },
+                                color: '#495057',
+                                padding: 16,
+                                usePointStyle: true,
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createBalanceChart(principal, monthlyRate, numberOfPayments, emi) {
+            const ctx = document.getElementById('balanceChart').getContext('2d');
+            
+            if (balanceChart) {
+                balanceChart.destroy();
+            }
+
+            let labels = [];
+            let balanceData = [];
+            let balance = principal;
+
+            for (let month = 1; month <= numberOfPayments; month += Math.ceil(numberOfPayments / 12)) {
+                labels.push('Month ' + month);
+                balanceData.push(Math.max(0, balance));
+                
+                for (let i = 0; i < Math.ceil(numberOfPayments / 12); i++) {
+                    if (balance > 0) {
+                        const interestPayment = balance * monthlyRate;
+                        const principalPayment = emi - interestPayment;
+                        balance -= principalPayment;
+                    }
+                }
+            }
+
+            balanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Outstanding Balance',
+                        data: balanceData,
+                        borderColor: 'rgba(29, 70, 54, 0.8)',
+                        backgroundColor: 'rgba(29, 70, 54, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: 'rgba(29, 70, 54, 0.8)',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 12, weight: 600 },
+                                color: '#495057',
+                                padding: 16,
+                                usePointStyle: true,
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                font: { size: 11 },
+                                color: '#495057',
+                                callback: (value) => '₹' + (value / 100000).toFixed(0) + 'L'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false,
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: { size: 11 },
+                                color: '#495057',
+                            },
+                            grid: {
+                                display: false,
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateAmortizationTable(principal, monthlyRate, emi, months) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            let balance = principal;
+
+            for (let month = 1; month <= months; month++) {
+                const interestPayment = balance * monthlyRate;
+                const principalPayment = emi - interestPayment;
+                balance -= principalPayment;
+
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = month;
+                row.insertCell(1).textContent = '₹' + formatNumber(emi.toFixed(0));
+                row.insertCell(2).textContent = '₹' + formatNumber(principalPayment.toFixed(0));
+                row.insertCell(3).textContent = '₹' + formatNumber(interestPayment.toFixed(0));
+                row.insertCell(4).textContent = '₹' + formatNumber(Math.max(0, balance).toFixed(0));
+            }
+        }
+
+        function resetCalculator() {
+            document.getElementById('loanAmount').value = 500000;
+            document.getElementById('loanRange').value = 500000;
+            document.getElementById('interestRate').value = 8.5;
+            document.getElementById('interestRange').value = 8.5;
+            document.getElementById('loanTenure').value = 20;
+            document.getElementById('tenureRange').value = 20;
+            document.getElementById('downPayment').value = 0;
+            document.getElementById('downPaymentRange').value = 0;
+            document.getElementById('resultsCard').style.display = 'none';
+            
+            if (pieChart) pieChart.destroy();
+            if (balanceChart) balanceChart.destroy();
+        }
+
+        function formatNumber(num) {
+            return Math.floor(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function navigateTo(calculator) {
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            console.log('Navigated to: ' + calculator);
+        }
+    </script>
+
+    <!-- Footer with Formula -->
+    <footer>
+        <div class="footer-container">
+            <div class="formula-section">
+                <div class="formula-title">EMI Calculation Formula</div>
+                <div class="formula-content">
+                    <strong>Equated Monthly Installment (EMI):</strong>
+                    <div class="formula-code">EMI = P × [r(1+r)^n] / [(1+r)^n - 1]</div>
+                    <p style="margin-top: 12px;">
+                        Where:<br>
+                        <strong>P</strong> = Principal loan amount (after down payment)<br>
+                        <strong>r</strong> = Monthly interest rate (Annual rate ÷ 12 ÷ 100)<br>
+                        <strong>n</strong> = Total number of monthly payments (Tenure × 12)
+                    </p>
+                    <p style="margin-top: 12px; font-size: 12px; color: #666;">
+                        <strong>Total Interest:</strong> (EMI × n) - P<br>
+                        <strong>Total Amount Payable:</strong> EMI × n
+                    </p>
+                </div>
+            </div>
+            <div class="footer-credit">
+                © 2025 Victoria Paradise Wealth (VPW) | Loan Calculator | 
+                <a href="https://victoriaofficeindi.wixsite.com/vpw-india" target="_blank" rel="noopener noreferrer" style="color: var(--hunter-green);">Learn More</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
